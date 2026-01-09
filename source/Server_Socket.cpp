@@ -47,6 +47,11 @@ void Server_Socket::send(const std::string& _message, const sockaddr_in& _client
     sendto(m_socket, _message.c_str(), _message.length(), 0, (sockaddr*)&_client, sizeof(_client));
 }
 
+void Server_Socket::send(const Package& _package, const sockaddr_in& _client)
+{
+    sendto(m_socket, _package.raw_data(), _package.raw_data_size(), 0, (sockaddr*)&_client, sizeof(_client));
+}
+
 Server_Socket::Message Server_Socket::receive()
 {
     Message message;

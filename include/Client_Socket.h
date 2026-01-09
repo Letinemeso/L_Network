@@ -5,6 +5,8 @@
 #include <winsock2.h>
 #include <ws2tcpip.h>
 
+#include <Package.h>
+
 
 namespace LNet
 {
@@ -34,6 +36,7 @@ namespace LNet
         void connect(const std::string& _ip, int _port);
 
         bool send(const std::string& _message);
+        bool send(const Package& _package);
         std::string receive();
 
     };

@@ -5,6 +5,8 @@
 #include <winsock2.h>
 #include <ws2tcpip.h>
 
+#include <Package.h>
+
 
 namespace LNet
 {
@@ -40,6 +42,7 @@ namespace LNet
 
     public:
         void send(const std::string& _message, const sockaddr_in& _client);
+        void send(const Package& _package, const sockaddr_in& _client);
         Message receive();
 
     };
