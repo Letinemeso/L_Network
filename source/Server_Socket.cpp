@@ -57,8 +57,12 @@ Server_Socket::Message Server_Socket::receive()
 
     if (received > 0)
     {
-        m_buffer[received] = '\0';
-        message.message = m_buffer;
+        message.message.resize(received + 1, 0);
+        for(unsigned int i = 0; i < received; ++i)
+            message.message[i] = m_buffer[i];
+        message.message[received] = 0;
+
+        message.received = received;
         return message;
     }
 

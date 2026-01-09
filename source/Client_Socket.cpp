@@ -47,7 +47,7 @@ bool Client_Socket::send(const std::string& _message)
 {
     int sent = sendto(m_socket, _message.c_str(), _message.length(), 0, (sockaddr*)&m_server_address, sizeof(m_server_address));
 
-    if (sent != SOCKET_ERROR)
+    if (sent != SOCKET_ERROR && sent > 0)
         return true;
 
     L_LOG(Net_Engine::instance().log_level(), "error sending a message to ip:[" + m_server_ip + "], port:[" + std::to_string(m_port) + "]");

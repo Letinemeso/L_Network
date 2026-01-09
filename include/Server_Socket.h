@@ -16,6 +16,7 @@ namespace LNet
         {
             sockaddr_in client_address;
             std::string message;
+            unsigned int received;
         };
 
     private:
