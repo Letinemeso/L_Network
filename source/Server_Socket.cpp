@@ -1,0 +1,64 @@
+#include <Server_Socket.h>
+
+#include <L_Debug/L_Debug.h>
+
+#include <Net_Engine.h>
+
+using namespace LNet;
+
+
+Server_Socket::Server_Socket(int _port)
+{
+    m_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+    if (m_socket == INVALID_SOCKET)
+        L_LOG(Net_Engine::instance().log_level(), "error while creating a server socket");
+    L_ASSERT(m_socket != INVALID_SOCKET);
+
+    m_address.sin_family = AF_INET;
+    m_address.sin_addr.s_addr = INADDR_ANY;
+    m_address.sin_port = htons(_port);
+
+    unsigned int binding_result = bind(m_socket, (sockaddr*)&m_address, sizeof(m_address));
+    if(binding_result != SOCKET_ERROR)
+    {
+        L_LOG(Net_Engine::instance().log_level(), "successfuly created and binded server socket");
+        return;
+    }
+
+    closesocket(m_socket);
+    L_LOG(Net_Engine::instance().log_level(), "error while binding a server socket");
+    L_ASSERT(binding_result != SOCKET_ERROR);
+}
+
+Server_Socket::~Server_Socket()
+{
+    closesocket(m_socket);
+}
+
+
+
+void Server_Socket::send(const std::string& _message, const sockaddr_in& _client)
+{
+    sendto(m_socket, _message.c_str(), _message.length(), 0, (sockaddr*)&_client, sizeof(_client));
+}
+
+Server_Socket::Message Server_Socket::receive()
+{
+    Message message;
+
+    char buffer[1024];
+    int client_address_length = sizeof(message.client_address);
+
+    int received = recvfrom(m_socket, buffer, sizeof(buffer) - 1, 0, (sockaddr*)&message.client_address, &client_address_length);
+
+    if (received > 0)
+    {
+        buffer[received] = '\0';
+        message.message = buffer;
+        return message;
+    }
+
+    L_LOG(Net_Engine::instance().log_level(), "server error while receiving a message");
+
+    return message;
+}

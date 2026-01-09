@@ -1,0 +1,43 @@
+#pragma once
+
+#include <string>
+
+#include <winsock2.h>
+#include <ws2tcpip.h>
+
+
+namespace LNet
+{
+
+    class Server_Socket
+    {
+    public:
+        struct Message
+        {
+            sockaddr_in client_address;
+            std::string message;
+        };
+
+    private:
+        SOCKET m_socket;
+        sockaddr_in m_address;
+
+        std::string m_server_ip;
+        int m_port = 0;
+
+    public:
+        Server_Socket(int _port);
+        ~Server_Socket();
+
+        Server_Socket(const Server_Socket&) = delete;
+        Server_Socket(Server_Socket&&) = delete;
+        void operator=(const Server_Socket&) = delete;
+        void operator=(Server_Socket&&) = delete;
+
+    public:
+        void send(const std::string& _message, const sockaddr_in& _client);
+        Message receive();
+
+    };
+
+}
