@@ -71,7 +71,7 @@ namespace LNet
         _Header result;
         unsigned int header_size = sizeof(result);
 
-        L_ASSERT(m_data.size() < header_size);
+        L_ASSERT(m_data.size() >= header_size);
 
         char* header_as_char = (char*)&result;
         for(unsigned int i = 0; i < header_size; ++i)
