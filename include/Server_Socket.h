@@ -17,8 +17,7 @@ namespace LNet
         struct Message
         {
             sockaddr_in client_address;
-            std::string message;
-            unsigned int received;
+            Package package;
         };
 
     private:

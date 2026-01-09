@@ -37,7 +37,7 @@ namespace LNet
 
         bool send(const std::string& _message);
         bool send(const Package& _package);
-        std::string receive();
+        Package receive();
 
     };
 

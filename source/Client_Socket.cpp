@@ -65,7 +65,7 @@ bool Client_Socket::send(const Package& _package)
     return false;
 }
 
-std::string Client_Socket::receive()
+Package Client_Socket::receive()
 {
     constexpr unsigned int Timeout_Milliseconds = 1000;
 
@@ -78,11 +78,12 @@ std::string Client_Socket::receive()
 
     if (received > 0)
     {
-        m_buffer[received] = '\0';
-        return std::string(m_buffer);
+        Package result;
+        result.append_data(m_buffer, received);
+        return result;
     }
 
     L_LOG(Net_Engine::instance().log_level(), "error receiving a message from ip:[" + m_server_ip + "], port:[" + std::to_string(m_port) + "]");
 
-    return "";
+    return { };
 }

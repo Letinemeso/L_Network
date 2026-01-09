@@ -15,7 +15,14 @@ namespace LNet
         Data_Vector m_data;
 
     public:
+        Package();
+        Package(const Package& _other);
+        Package(Package&& _from);
+        ~Package();
+
+    public:
         void append_data(const Data_Vector& _data);
+        void append_data(const char* _data, unsigned int _size);
         void clear();
 
         const char* raw_data() const;
