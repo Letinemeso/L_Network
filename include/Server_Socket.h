@@ -26,6 +26,7 @@ namespace LNet
 
         std::string m_server_ip;
         int m_port = 0;
+        unsigned int m_listen_timeout_ms = 0;
 
         char* m_buffer = nullptr;
         unsigned int m_buffer_size = 0;
@@ -38,6 +39,8 @@ namespace LNet
         Server_Socket(Server_Socket&&) = delete;
         void operator=(const Server_Socket&) = delete;
         void operator=(Server_Socket&&) = delete;
+
+        inline void set_listen_timeout_ms(unsigned int _value) { m_listen_timeout_ms = _value; }
 
     public:
         void send(const std::string& _message, const sockaddr_in& _client);

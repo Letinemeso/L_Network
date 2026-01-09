@@ -9,6 +9,8 @@ using namespace LNet;
 
 Server_Socket::Server_Socket(int _port, unsigned int _buffer_size)
 {
+    Net_Engine::instance();     //  in case winsock is not initialized
+
     m_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     if (m_socket == INVALID_SOCKET)
         L_LOG(Net_Engine::instance().log_level(), "error while creating a server socket");
@@ -57,6 +59,11 @@ Server_Socket::Message Server_Socket::receive()
     Message message;
 
     int client_address_length = sizeof(message.client_address);
+
+    if(m_listen_timeout_ms == 0)
+        setsockopt(m_socket, SOL_SOCKET, SO_RCVTIMEO, NULL, 0);
+    else
+        setsockopt(m_socket, SOL_SOCKET, SO_RCVTIMEO, (char*)&m_listen_timeout_ms, sizeof(m_listen_timeout_ms));
 
     int received = recvfrom(m_socket, m_buffer, m_buffer_size - 1, 0, (sockaddr*)&message.client_address, &client_address_length);
 

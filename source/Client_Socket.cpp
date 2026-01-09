@@ -67,9 +67,10 @@ bool Client_Socket::send(const Package& _package)
 
 Package Client_Socket::receive()
 {
-    constexpr unsigned int Timeout_Milliseconds = 1000;
-
-    setsockopt(m_socket, SOL_SOCKET, SO_RCVTIMEO, (char*)&Timeout_Milliseconds, sizeof(Timeout_Milliseconds));
+    if(m_listen_timeout_ms == 0)
+        setsockopt(m_socket, SOL_SOCKET, SO_RCVTIMEO, NULL, 0);
+    else
+        setsockopt(m_socket, SOL_SOCKET, SO_RCVTIMEO, (char*)&m_listen_timeout_ms, sizeof(m_listen_timeout_ms));
 
     sockaddr_in from_address;
     int sockaddr_size = sizeof(from_address);

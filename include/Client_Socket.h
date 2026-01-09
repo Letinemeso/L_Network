@@ -19,6 +19,7 @@ namespace LNet
 
         std::string m_server_ip;
         int m_port = 0;
+        unsigned int m_listen_timeout_ms = 1000;
 
         char* m_buffer = nullptr;
         unsigned int m_buffer_size = 0;
@@ -31,6 +32,8 @@ namespace LNet
         Client_Socket(Client_Socket&&) = delete;
         void operator=(const Client_Socket&) = delete;
         void operator=(Client_Socket&&) = delete;
+
+        inline void set_listen_timeout_ms(unsigned int _value) { m_listen_timeout_ms = _value; }
 
     public:
         void connect(const std::string& _ip, int _port);
