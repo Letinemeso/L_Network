@@ -7,7 +7,7 @@
 using namespace LNet;
 
 
-Server_Socket::Server_Socket(int _port)
+Server_Socket::Server_Socket(int _port, unsigned int _buffer_size)
 {
     m_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     if (m_socket == INVALID_SOCKET)
@@ -19,19 +19,24 @@ Server_Socket::Server_Socket(int _port)
     m_address.sin_port = htons(_port);
 
     unsigned int binding_result = bind(m_socket, (sockaddr*)&m_address, sizeof(m_address));
-    if(binding_result != SOCKET_ERROR)
+    if(binding_result == SOCKET_ERROR)
     {
-        L_LOG(Net_Engine::instance().log_level(), "successfuly created and binded server socket");
+        closesocket(m_socket);
+        L_LOG(Net_Engine::instance().log_level(), "error while binding a server socket");
+        L_ASSERT(binding_result != SOCKET_ERROR);
+
         return;
     }
 
-    closesocket(m_socket);
-    L_LOG(Net_Engine::instance().log_level(), "error while binding a server socket");
-    L_ASSERT(binding_result != SOCKET_ERROR);
+    L_LOG(Net_Engine::instance().log_level(), "successfuly created and binded server socket");
+
+    m_buffer_size = _buffer_size;
+    m_buffer = new char[m_buffer_size];
 }
 
 Server_Socket::~Server_Socket()
 {
+    delete[] m_buffer;
     closesocket(m_socket);
 }
 
@@ -46,15 +51,14 @@ Server_Socket::Message Server_Socket::receive()
 {
     Message message;
 
-    char buffer[1024];
     int client_address_length = sizeof(message.client_address);
 
-    int received = recvfrom(m_socket, buffer, sizeof(buffer) - 1, 0, (sockaddr*)&message.client_address, &client_address_length);
+    int received = recvfrom(m_socket, m_buffer, m_buffer_size - 1, 0, (sockaddr*)&message.client_address, &client_address_length);
 
     if (received > 0)
     {
-        buffer[received] = '\0';
-        message.message = buffer;
+        m_buffer[received] = '\0';
+        message.message = m_buffer;
         return message;
     }
 

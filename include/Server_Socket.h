@@ -25,8 +25,11 @@ namespace LNet
         std::string m_server_ip;
         int m_port = 0;
 
+        char* m_buffer = nullptr;
+        unsigned int m_buffer_size = 0;
+
     public:
-        Server_Socket(int _port);
+        Server_Socket(int _port, unsigned int _buffer_size);
         ~Server_Socket();
 
         Server_Socket(const Server_Socket&) = delete;
