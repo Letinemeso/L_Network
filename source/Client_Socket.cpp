@@ -77,14 +77,10 @@ Package Client_Socket::receive()
 
     int received = recvfrom(m_socket, m_buffer, m_buffer_size - 1, 0, (sockaddr*)&from_address, &sockaddr_size);
 
-    if (received > 0)
-    {
-        Package result;
-        result.append_data(m_buffer, received);
-        return result;
-    }
+    if (received == 0)
+        return { };
 
-    L_LOG(Net_Engine::instance().log_level(), "error receiving a message from ip:[" + m_server_ip + "], port:[" + std::to_string(m_port) + "]");
-
-    return { };
+    Package result;
+    result.append_data(m_buffer, received);
+    return result;
 }
