@@ -21,6 +21,9 @@ namespace LNet
         ~Package();
 
     public:
+        inline bool empty() const { return m_data.size() == 0; }
+
+    public:
         void append_data(const Data_Vector& _data);
         void append_data(const char* _data, unsigned int _size);
         void clear();
