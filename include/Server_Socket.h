@@ -6,6 +6,7 @@
 #include <ws2tcpip.h>
 
 #include <Package.h>
+#include <IP_Address.h>
 
 
 namespace LNet
@@ -16,7 +17,7 @@ namespace LNet
     public:
         struct Message
         {
-            sockaddr_in client_address;
+            IP_Address client_address;
             Package package;
         };
 

@@ -58,22 +58,24 @@ Server_Socket::Message Server_Socket::receive()
 {
     Message message;
 
-    int client_address_length = sizeof(message.client_address);
-
     if(m_listen_timeout_ms == 0)
         setsockopt(m_socket, SOL_SOCKET, SO_RCVTIMEO, NULL, 0);
     else
         setsockopt(m_socket, SOL_SOCKET, SO_RCVTIMEO, (char*)&m_listen_timeout_ms, sizeof(m_listen_timeout_ms));
 
-    int received = recvfrom(m_socket, m_buffer, m_buffer_size - 1, 0, (sockaddr*)&message.client_address, &client_address_length);
+    sockaddr_in address;
+    int client_address_length = sizeof(address);
 
-    if (received > 0)
+    int received = recvfrom(m_socket, m_buffer, m_buffer_size - 1, 0, (sockaddr*)&address, &client_address_length);
+
+    if (received <= 0)
     {
-        message.package.append_data(m_buffer, received);
+        L_LOG(Net_Engine::instance().log_level(), "server error while receiving a message");
         return message;
     }
 
-    L_LOG(Net_Engine::instance().log_level(), "server error while receiving a message");
+    message.client_address.init_address(address);
+    message.package.append_data(m_buffer, received);
 
     return message;
 }
