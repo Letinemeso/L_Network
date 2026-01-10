@@ -77,7 +77,7 @@ Package Client_Socket::receive()
 
     int received = recvfrom(m_socket, m_buffer, m_buffer_size - 1, 0, (sockaddr*)&from_address, &sockaddr_size);
 
-    if (received == 0)
+    if (received <= 0)
         return { };
 
     Package result;
