@@ -16,11 +16,13 @@ Server_Socket::Server_Socket(int _port, unsigned int _buffer_size)
         L_LOG(Net_Engine::instance().log_level(), "error while creating a server socket");
     L_ASSERT(m_socket != INVALID_SOCKET);
 
-    m_address.sin_family = AF_INET;
-    m_address.sin_addr.s_addr = INADDR_ANY;
-    m_address.sin_port = htons(_port);
+    sockaddr_in address;
 
-    unsigned int binding_result = bind(m_socket, (sockaddr*)&m_address, sizeof(m_address));
+    address.sin_family = AF_INET;
+    address.sin_addr.s_addr = INADDR_ANY;
+    address.sin_port = htons(_port);
+
+    unsigned int binding_result = bind(m_socket, (sockaddr*)&address, sizeof(address));
     if(binding_result == SOCKET_ERROR)
     {
         closesocket(m_socket);
@@ -29,6 +31,8 @@ Server_Socket::Server_Socket(int _port, unsigned int _buffer_size)
 
         return;
     }
+
+    m_address.init_address(address);
 
     L_LOG(Net_Engine::instance().log_level(), "successfuly created and binded server socket");
 
@@ -44,14 +48,14 @@ Server_Socket::~Server_Socket()
 
 
 
-void Server_Socket::send(const std::string& _message, const sockaddr_in& _client)
+void Server_Socket::send(const std::string& _message, const IP_Address& _client)
 {
-    sendto(m_socket, _message.c_str(), _message.length(), 0, (sockaddr*)&_client, sizeof(_client));
+    sendto(m_socket, _message.c_str(), _message.length(), 0, (const sockaddr*)&_client.address(), sizeof(_client.address()));
 }
 
-void Server_Socket::send(const Package& _package, const sockaddr_in& _client)
+void Server_Socket::send(const Package& _package, const IP_Address& _client)
 {
-    sendto(m_socket, _package.raw_data(), _package.raw_data_size(), 0, (sockaddr*)&_client, sizeof(_client));
+    sendto(m_socket, _package.raw_data(), _package.raw_data_size(), 0, (const sockaddr*)&_client.address(), sizeof(_client.address()));
 }
 
 Server_Socket::Message Server_Socket::receive()

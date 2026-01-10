@@ -23,7 +23,7 @@ namespace LNet
 
     private:
         SOCKET m_socket;
-        sockaddr_in m_address;
+        IP_Address m_address;
 
         std::string m_server_ip;
         int m_port = 0;
@@ -44,8 +44,8 @@ namespace LNet
         inline void set_listen_timeout_ms(unsigned int _value) { m_listen_timeout_ms = _value; }
 
     public:
-        void send(const std::string& _message, const sockaddr_in& _client);
-        void send(const Package& _package, const sockaddr_in& _client);
+        void send(const std::string& _message, const IP_Address& _client);
+        void send(const Package& _package, const IP_Address& _client);
         Message receive();
 
     };
