@@ -18,6 +18,16 @@ Package::Package(Package&& _from)
     m_data = (Data_Vector&&)_from.m_data;
 }
 
+void Package::operator=(const Package& _other)
+{
+    m_data = _other.m_data;
+}
+
+void Package::operator=(Package&& _from)
+{
+    m_data = (Data_Vector&&)_from.m_data;
+}
+
 Package::~Package()
 {
 

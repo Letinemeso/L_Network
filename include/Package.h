@@ -18,6 +18,8 @@ namespace LNet
         Package();
         Package(const Package& _other);
         Package(Package&& _from);
+        void operator=(const Package& _other);
+        void operator=(Package&& _from);
         ~Package();
 
     public:
