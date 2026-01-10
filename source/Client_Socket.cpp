@@ -9,6 +9,8 @@ using namespace LNet;
 
 Client_Socket::Client_Socket(unsigned int _buffer_size)
 {
+    Net_Engine::instance();     //  in case winsock is not initialized
+
     m_socket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
 
     if (m_socket == INVALID_SOCKET)
@@ -67,6 +69,9 @@ bool Client_Socket::send(const Package& _package)
 
 Package Client_Socket::receive()
 {
+    constexpr unsigned int Timeout = 1;
+    setsockopt(m_socket, SOL_SOCKET, SO_RCVTIMEO, (char*)&Timeout, sizeof(Timeout));
+
     sockaddr_in from_address;
     int sockaddr_size = sizeof(from_address);
 

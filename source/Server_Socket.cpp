@@ -73,10 +73,7 @@ Server_Socket::Message Server_Socket::receive()
     int received = recvfrom(m_socket, m_buffer, m_buffer_size - 1, 0, (sockaddr*)&address, &client_address_length);
 
     if (received <= 0)
-    {
-        L_LOG(Net_Engine::instance().log_level(), "server error while receiving a message");
         return message;
-    }
 
     message.client_address.init_address(address);
     message.package.append_data(m_buffer, received);
