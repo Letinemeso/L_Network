@@ -37,7 +37,7 @@ namespace LNet
         template<typename _Header>
         void append_header(const _Header& _header);
         template<typename _Header>
-        _Header parse_header();
+        _Header parse_header() const;
 
         template<typename _Header_Type>
         const char* raw_data_without_header() const;
@@ -69,7 +69,7 @@ namespace LNet
     }
 
     template<typename _Header>
-    _Header Package::parse_header()
+    _Header Package::parse_header() const
     {
         _Header result;
         unsigned int header_size = sizeof(result);
